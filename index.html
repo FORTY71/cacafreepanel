@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07TEAM - Admin Panel</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome untuk Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0f172a',
+                        cardBg: '#1e293b',
+                        accentGreen: '#22c55e',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-darkBg text-gray-100 font-sans antialiased min-h-screen flex flex-col md:flex-row">
+
+    <!-- SIDEBAR -->
+    <div class="w-full md:w-64 bg-cardBg p-6 flex flex-col border-b md:border-b-0 md:border-r border-gray-700/50">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="bg-accentGreen/20 text-accentGreen p-2 rounded-lg text-xl font-bold">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-wider">07TEAM</h1>
+                <p class="text-xs text-gray-400">Management Panel</p>
+            </div>
+        </div>
+        
+        <nav class="flex flex-col gap-2 flex-grow">
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-accentGreen text-darkBg font-semibold transition">
+                <i class="fa-solid fa-chart-pie w-5"></i> Dashboard
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gray-100 transition">
+                <i class="fa-solid fa-key w-5"></i> Licenses
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gray-100 transition">
+                <i class="fa-solid fa-users w-5"></i> Users
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gray-100 transition">
+                <i class="fa-solid fa-gear w-5"></i> Settings
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-gray-700/50 text-xs text-gray-500 text-center">
+            Owner ID: Ug7ojMSG2K
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="flex-grow p-6 md:p-10 max-w-7xl mx-auto w-full">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div>
+                <h2 class="text-2xl font-bold">Overview</h2>
+                <p class="text-sm text-gray-400">Welcome back, Administrator.</p>
+            </div>
+            <div class="flex gap-3">
+                <button class="bg-accentGreen/10 hover:bg-accentGreen/20 text-accentGreen px-4 py-2 rounded-lg text-sm font-semibold border border-accentGreen/30 transition">
+                    <i class="fa-solid fa-plus mr-2"></i>Generate Key
+                </button>
+            </div>
+        </div>
+
+        <!-- STATS CARDS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <!-- Card 1 -->
+            <div class="bg-cardBg p-6 rounded-xl border border-gray-700/30 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-400 font-medium">Total Keys</p>
+                    <h3 class="text-3xl font-bold mt-1">1,240</h3>
+                </div>
+                <div class="text-blue-500 bg-blue-500/10 p-4 rounded-xl text-xl">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="bg-cardBg p-6 rounded-xl border border-gray-700/30 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-400 font-medium">Online Users</p>
+                    <h3 class="text-3xl font-bold mt-1 text-accentGreen">42</h3>
+                </div>
+                <div class="text-accentGreen bg-accentGreen/10 p-4 rounded-xl text-xl">
+                    <i class="fa-solid fa-circle-dot animate-pulse"></i>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="bg-cardBg p-6 rounded-xl border border-gray-700/30 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-400 font-medium">App Version</p>
+                    <h3 class="text-3xl font-bold mt-1">v1.0</h3>
+                </div>
+                <div class="text-purple-500 bg-purple-500/10 p-4 rounded-xl text-xl">
+                    <i class="fa-solid fa-code-branch"></i>
+                </div>
+            </div>
+            <!-- Card 4 -->
+            <div class="bg-cardBg p-6 rounded-xl border border-gray-700/30 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-400 font-medium">Server Status</p>
+                    <h3 class="text-3xl font-bold mt-1 text-emerald-400">Operational</h3>
+                </div>
+                <div class="text-emerald-400 bg-emerald-400/10 p-4 rounded-xl text-xl">
+                    <i class="fa-solid fa-server"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE SECTION (RECENT KEYS / USERS) -->
+        <div class="bg-cardBg rounded-xl border border-gray-700/30 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-700/50 flex justify-between items-center">
+                <h4 class="font-bold">Recent Generated License Keys</h4>
+                <span class="text-xs text-gray-400 bg-gray-800 px-2.5 py-1 rounded-full">Live Update</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-800/40 text-gray-400 uppercase text-xs tracking-wider">
+                        <tr>
+                            <th class="px-6 py-3">License Key</th>
+                            <th class="px-6 py-3">Duration</th>
+                            <th class="px-6 py-3">Status</th>
+                            <th class="px-6 py-3">Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700/30">
+                        <tr class="hover:bg-gray-800/20 transition">
+                            <td class="px-6 py-4 font-mono text-accentGreen">07TEAM-XXXX-XXXX-XXXX</td>
+                            <td class="px-6 py-4">30 Days</td>
+                            <td class="px-6 py-4"><span class="bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded text-xs font-semibold">Unused</span></td>
+                            <td class="px-6 py-4 text-gray-400">July 04, 2026</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/20 transition">
+                            <td class="px-6 py-4 font-mono text-accentGreen">07TEAM-YYYY-YYYY-YYYY</td>
+                            <td class="px-6 py-4">Lifetime</td>
+                            <td class="px-6 py-4"><span class="bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded text-xs font-semibold">Active</span></td>
+                            <td class="px-6 py-4 text-gray-400">July 03, 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
