@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07TEAM - Secure Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 h-screen flex items-center justify-center">
+    <div class="bg-gray-800 p-8 rounded-xl shadow-lg w-96 border border-gray-700">
+        <h2 class="text-2xl text-white font-bold mb-6 text-center">Admin Login</h2>
+        <input type="password" id="passwordInput" placeholder="Enter Admin Password" class="w-full p-3 rounded bg-gray-700 text-white mb-4 border border-gray-600 focus:outline-none focus:border-green-500">
+        <button onclick="checkPassword()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded transition">Login</button>
+        <p id="errorMsg" class="text-red-500 text-sm mt-3 text-center hidden">Incorrect Password!</p>
+    </div>
+
+    <script>
+        // GANTI INI DENGAN PASSWORD RAHASIA KAKAK
+        const ADMIN_PASSWORD = "PasswordRahasia123"; 
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            if (input === ADMIN_PASSWORD) {
+                // Simpan token tanda masuk ke browser
+                localStorage.setItem('isAdminLoggedIn', 'true');
+                // Arahkan ke panel utama
+                window.location.href = 'index.html'; 
+            } else {
+                document.getElementById('errorMsg').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
