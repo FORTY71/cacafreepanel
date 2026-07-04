@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>07TEAM - Admin Panel</title>
+    
+    <!-- SYSTEM KEAMANAN: Cek Login sebelum halaman dimuat -->
+    <script>
+        if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
+            window.location.href = 'login.html'; // Tendang ke halaman login jika belum masuk
+        }
+    </script>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome untuk Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -25,7 +36,7 @@
 <body class="bg-darkBg text-gray-100 font-sans antialiased min-h-screen flex flex-col md:flex-row">
 
     <!-- SIDEBAR -->
-    <div class="w-full md:w-64 bg-cardBg p-6 flex flex-col border-b md:border-b-0 md:border-r border-gray-700/50">
+    <div class="w-full md:w-64 bg-cardBg p-6 flex flex-col border-b md:border-b-0 md:border-r border-gray-700/50 min-h-screen">
         <div class="flex items-center gap-3 mb-8">
             <div class="bg-accentGreen/20 text-accentGreen p-2 rounded-lg text-xl font-bold">
                 <i class="fa-solid fa-shield-halved"></i>
@@ -44,15 +55,18 @@
                 <i class="fa-solid fa-key w-5"></i> Licenses
             </a>
             <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gray-100 transition">
-                <i class="fa-solid fa-users w-5"></i> Users
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gray-100 transition">
                 <i class="fa-solid fa-gear w-5"></i> Settings
             </a>
         </nav>
 
-        <div class="mt-auto pt-6 border-t border-gray-700/50 text-xs text-gray-500 text-center">
-            Owner ID: Ug7ojMSG2K
+        <div class="mt-auto pt-6 border-t border-gray-700/50">
+            <!-- TOMBOL LOGOUT -->
+            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 px-4 py-2 rounded-lg transition font-semibold text-sm mb-4">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+            <div class="text-xs text-gray-500 text-center">
+                Owner ID: Ug7ojMSG2K
+            </div>
         </div>
     </div>
 
@@ -65,7 +79,8 @@
                 <p class="text-sm text-gray-400">Welcome back, Administrator.</p>
             </div>
             <div class="flex gap-3">
-                <button class="bg-accentGreen/10 hover:bg-accentGreen/20 text-accentGreen px-4 py-2 rounded-lg text-sm font-semibold border border-accentGreen/30 transition">
+                <!-- TOMBOL GENERATE KEY -->
+                <button id="btnGenerate" onclick="createNewKey()" class="bg-accentGreen hover:bg-green-500 text-darkBg px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-accentGreen/20 transition flex items-center">
                     <i class="fa-solid fa-plus mr-2"></i>Generate Key
                 </button>
             </div>
@@ -73,83 +88,201 @@
 
         <!-- STATS CARDS -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            <!-- Card 1 -->
             <div class="bg-cardBg p-6 rounded-xl border border-gray-700/30 flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-400 font-medium">Total Keys</p>
-                    <h3 class="text-3xl font-bold mt-1">1,240</h3>
+                    <h3 class="text-3xl font-bold mt-1" id="totalKeysDisplay">0</h3>
                 </div>
                 <div class="text-blue-500 bg-blue-500/10 p-4 rounded-xl text-xl">
                     <i class="fa-solid fa-key"></i>
                 </div>
             </div>
-            <!-- Card 2 -->
-            <div class="bg-cardBg p-6 rounded-xl border border-gray-700/30 flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-400 font-medium">Online Users</p>
-                    <h3 class="text-3xl font-bold mt-1 text-accentGreen">42</h3>
-                </div>
-                <div class="text-accentGreen bg-accentGreen/10 p-4 rounded-xl text-xl">
-                    <i class="fa-solid fa-circle-dot animate-pulse"></i>
-                </div>
-            </div>
-            <!-- Card 3 -->
-            <div class="bg-cardBg p-6 rounded-xl border border-gray-700/30 flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-400 font-medium">App Version</p>
-                    <h3 class="text-3xl font-bold mt-1">v1.0</h3>
-                </div>
-                <div class="text-purple-500 bg-purple-500/10 p-4 rounded-xl text-xl">
-                    <i class="fa-solid fa-code-branch"></i>
-                </div>
-            </div>
-            <!-- Card 4 -->
             <div class="bg-cardBg p-6 rounded-xl border border-gray-700/30 flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-400 font-medium">Server Status</p>
-                    <h3 class="text-3xl font-bold mt-1 text-emerald-400">Operational</h3>
+                    <h3 class="text-xl font-bold mt-1 text-emerald-400">Secured</h3>
                 </div>
                 <div class="text-emerald-400 bg-emerald-400/10 p-4 rounded-xl text-xl">
-                    <i class="fa-solid fa-server"></i>
+                    <i class="fa-solid fa-lock"></i>
                 </div>
             </div>
         </div>
 
-        <!-- TABLE SECTION (RECENT KEYS / USERS) -->
+        <!-- TABLE SECTION -->
         <div class="bg-cardBg rounded-xl border border-gray-700/30 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-700/50 flex justify-between items-center">
                 <h4 class="font-bold">Recent Generated License Keys</h4>
-                <span class="text-xs text-gray-400 bg-gray-800 px-2.5 py-1 rounded-full">Live Update</span>
+                <button onclick="fetchKeysFromDatabase()" class="text-xs text-gray-400 bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-md transition">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Refresh Data
+                </button>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
                     <thead class="bg-gray-800/40 text-gray-400 uppercase text-xs tracking-wider">
                         <tr>
                             <th class="px-6 py-3">License Key</th>
-                            <th class="px-6 py-3">Duration</th>
                             <th class="px-6 py-3">Status</th>
                             <th class="px-6 py-3">Created Date</th>
+                            <th class="px-6 py-3">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-700/30">
+                    <tbody id="keysTableBody" class="divide-y divide-gray-700/30">
+                        <!-- Data tabel akan dimasukkan otomatis ke sini lewat JavaScript -->
                         <tr class="hover:bg-gray-800/20 transition">
-                            <td class="px-6 py-4 font-mono text-accentGreen">07TEAM-XXXX-XXXX-XXXX</td>
-                            <td class="px-6 py-4">30 Days</td>
-                            <td class="px-6 py-4"><span class="bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded text-xs font-semibold">Unused</span></td>
-                            <td class="px-6 py-4 text-gray-400">July 04, 2026</td>
-                        </tr>
-                        <tr class="hover:bg-gray-800/20 transition">
-                            <td class="px-6 py-4 font-mono text-accentGreen">07TEAM-YYYY-YYYY-YYYY</td>
-                            <td class="px-6 py-4">Lifetime</td>
-                            <td class="px-6 py-4"><span class="bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded text-xs font-semibold">Active</span></td>
-                            <td class="px-6 py-4 text-gray-400">July 03, 2026</td>
+                            <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                                Memuat data database... <br> (Atau Supabase belum dikonfigurasi)
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // ==========================================
+        // 1. FUNGSI LOGOUT
+        // ==========================================
+        function logout() {
+            localStorage.removeItem('isAdminLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        // ==========================================
+        // 2. KONFIGURASI SUPABASE
+        // Ganti URL dan KEY di bawah ini dengan milikmu dari Supabase!
+        // ==========================================
+        const SUPABASE_URL = 'https://[GANTI_DENGAN_PROJECT_URL_KAMU].supabase.co';
+        const SUPABASE_ANON_KEY = '[GANTI_DENGAN_ANON_KEY_KAMU]';
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ==========================================
+        // 3. FUNGSI GENERATE KEY STRING ACAK
+        // ==========================================
+        function generateRandomKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '07TEAM-';
+            for (let i = 0; i < 12; i++) {
+                if (i > 0 && i % 4 === 0) result += '-';
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // ==========================================
+        // 4. FUNGSI KLIK TOMBOL GENERATE
+        // ==========================================
+        async function createNewKey() {
+            const btn = document.getElementById('btnGenerate');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Generating...';
+            btn.disabled = true;
+
+            const newKeyString = generateRandomKey();
+            const dateNow = new Date().toISOString(); // Waktu saat ini
+
+            // Cek apakah Supabase sudah diisi atau masih default
+            if (SUPABASE_URL.includes('[GANTI')) {
+                alert("Peringatan: Supabase belum dikonfigurasi!\n\nKey berikut ini hanya simulasi dan tidak masuk ke database: \n" + newKeyString);
+                tambahBarisTabelSimulasi(newKeyString, dateNow);
+            } else {
+                try {
+                    // Simpan ke Supabase (Tabel: license_keys)
+                    const { data, error } = await supabase
+                        .from('license_keys')
+                        .insert([{ key_string: newKeyString, status: 'Unused' }]);
+
+                    if (error) throw error;
+                    
+                    // Sukses, refresh tabel
+                    fetchKeysFromDatabase();
+                } catch (err) {
+                    alert("Gagal menyimpan ke database! Pastikan tabel 'license_keys' sudah dibuat di Supabase.\nError: " + err.message);
+                }
+            }
+
+            // Kembalikan tombol ke kondisi semula
+            btn.innerHTML = '<i class="fa-solid fa-plus mr-2"></i>Generate Key';
+            btn.disabled = false;
+        }
+
+        // ==========================================
+        // 5. FUNGSI MENGAMBIL DATA DARI DATABASE
+        // ==========================================
+        async function fetchKeysFromDatabase() {
+            if (SUPABASE_URL.includes('[GANTI')) return; // Lewati jika belum setup Supabase
+
+            try {
+                const { data, error, count } = await supabase
+                    .from('license_keys')
+                    .select('*', { count: 'exact' })
+                    .order('created_at', { ascending: false })
+                    .limit(50); // Ambil 50 terbaru
+
+                if (error) throw error;
+
+                // Update total key
+                if(count !== null) document.getElementById('totalKeysDisplay').innerText = count;
+
+                const tbody = document.getElementById('keysTableBody');
+                tbody.innerHTML = ''; // Bersihkan tabel loading
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Belum ada license key. Silahkan buat baru.</td></tr>';
+                    return;
+                }
+
+                // Masukkan data ke tabel html
+                data.forEach(row => {
+                    tambahBarisTabel(row.key_string, row.status, row.created_at, tbody);
+                });
+            } catch (err) {
+                console.error("Gagal mengambil data:", err);
+            }
+        }
+
+        // Fungsi kecil pembantu untuk render HTML di tabel
+        function tambahBarisTabel(keyString, status, dateString, targetElement) {
+            const date = new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+            const isUnused = status === 'Unused';
+            const statusClass = isUnused ? 'bg-yellow-500/10 text-yellow-500' : 'bg-emerald-500/10 text-emerald-400';
+            
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-800/20 transition';
+            tr.innerHTML = `
+                <td class="px-6 py-4 font-mono text-accentGreen">${keyString}</td>
+                <td class="px-6 py-4"><span class="${statusClass} px-2 py-1 rounded text-xs font-semibold">${status}</span></td>
+                <td class="px-6 py-4 text-gray-400">${date}</td>
+                <td class="px-6 py-4">
+                    <button onclick="copyToClipboard('${keyString}')" class="text-blue-400 hover:text-blue-300 mr-3" title="Copy Key">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                    <button class="text-red-400 hover:text-red-300" title="Delete (Fitur belum aktif)">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            targetElement.appendChild(tr);
+        }
+
+        // Fitur tambahan jika Supabase belum disetting (agar web tetap terlihat jalan saat dicoba)
+        function tambahBarisTabelSimulasi(keyString, dateString) {
+            const tbody = document.getElementById('keysTableBody');
+            if(tbody.innerHTML.includes('Memuat data')) tbody.innerHTML = ''; // Hapus tulisan loading
+            tambahBarisTabel(keyString, 'Unused', dateString, tbody);
+        }
+
+        // Fitur Copy Key
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert("Key disalin: " + text);
+        }
+
+        // Jalankan fetch otomatis saat halaman dibuka
+        window.onload = () => {
+            fetchKeysFromDatabase();
+        };
+    </script>
 </body>
 </html>
